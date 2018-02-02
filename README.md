@@ -37,7 +37,7 @@ func main() {
 
 ```
 
-```bash
+```text
 
 negruel$ go run main.go
 (ma@*b1Q_T!9CKDu5
