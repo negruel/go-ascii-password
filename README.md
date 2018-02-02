@@ -21,7 +21,7 @@ func main() {
         Lower:        1,
         Number:       1,
         Symbol:       1,
-        ValidSymbols: "!@$%&*()_-'",
+        ValidSymbols: "!@$&*()_-'",
     }
 
     // call Generate to create a password conforming to the defined rules
@@ -40,7 +40,7 @@ func main() {
 ```bash
 
 negruel$ go run main.go
-[ma?b1Q@T%9CKDu5
+(ma@*b1Q_T!9CKDu5
 
 ```
 
