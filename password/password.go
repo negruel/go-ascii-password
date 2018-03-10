@@ -193,11 +193,8 @@ func getChars(count int, runes []rune) []rune {
 
 }
 
-// shuffles the passed rune slice using fisher-yates algorithm
 func shuffleRune(slice []rune) {
-	length := len(slice)
-	for i := length - 1; i > 0; i-- {
-		j := rand.Intn(i + 1)
+	rand.Shuffle(len(slice), func(i, j int) {
 		slice[i], slice[j] = slice[j], slice[i]
-	}
+	})
 }
