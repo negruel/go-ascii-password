@@ -9,6 +9,8 @@ Simple ascii password generator written in Go
 package main
 
 import (
+    "fmt"
+
     "github.com/negruel/go-ascii-password/password"
 )
 
@@ -21,16 +23,16 @@ func main() {
         Lower:        1,
         Number:       1,
         Symbol:       1,
-        ValidSymbols: "!@$&*()_-'",
+        ValidSymbols: []rune("!@$&*()_-'"),
     }
 
     // call Generate to create a password conforming to the defined rules
-    pwd, err := pwd.Generate()
+    newPwd, err := pwd.Generate()
 
     if err != nil {
         fmt.Println(err)
     } else {
-        fmt.Println(pwd)
+        fmt.Println(newPwd)
     }
 
 }

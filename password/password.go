@@ -193,8 +193,18 @@ func getChars(count int, runes []rune) []rune {
 
 }
 
+// Uses rand.Shuffle introduced in Go 1.10. If running earlier
+// version, use the version below and comment this one out.
 func shuffleRune(slice []rune) {
 	rand.Shuffle(len(slice), func(i, j int) {
 		slice[i], slice[j] = slice[j], slice[i]
 	})
 }
+
+// func shuffleRune(slice []rune) {
+// 	length := len(slice)
+// 	for i := length - 1; i > 0; i-- {
+// 		j := rand.Intn(i + 1)
+// 		slice[i], slice[j] = slice[j], slice[i]
+// 	}
+// }
