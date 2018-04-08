@@ -1,6 +1,14 @@
 # go-ascii-password
 
-Simple ascii password generator written in Go
+Simple ASCII password generator written in Go
+
+Passwords are generated conforming to the passed rules defining the minimum length and minimum number of uppercase, lowercase, numbers, and special characters. Callers may override the list of allowable special characters.
+
+Two methods are exposed:
+
+__Generate:__ This method uses the random number generator exposed by math/rand
+
+__GenerateStrong:__ This method uses the random number generator exposed by crypto/rand
 
 ## Example usage
 
@@ -27,6 +35,7 @@ func main() {
     }
 
     // call Generate to create a password conforming to the defined rules
+    // using the random number generator in math/rand
     newPwd, err := pwd.Generate()
 
     // call GenerateStrong to create a password conforming to the defined rules
