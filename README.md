@@ -29,6 +29,10 @@ func main() {
     // call Generate to create a password conforming to the defined rules
     newPwd, err := pwd.Generate()
 
+    // call GenerateStrong to create a password conforming to the defined rules
+    // using the random number generator in crypto/rand
+    // newPwd, err := pwd.GenerateStrong()
+
     if err != nil {
         fmt.Println(err)
     } else {
