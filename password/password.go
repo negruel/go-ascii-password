@@ -23,7 +23,9 @@ Purpose: generates passwords using ascii characters that meet user-specified com
 package password
 
 import (
+	crytporand "crypto/rand"
 	"errors"
+	"math/big"
 	"math/rand"
 	"time"
 )
@@ -98,8 +100,7 @@ func (p *Password) validateArgs() error {
 
 }
 
-// Generate returns a password using the passed rules
-func (p *Password) Generate() (password string, err error) {
+func (p *Password) generate(strong bool) (password string, err error) {
 
 	err = p.validateArgs()
 	if err != nil {
@@ -122,7 +123,7 @@ func (p *Password) Generate() (password string, err error) {
 		priorLen = len(chars)
 		chars = append(chars, []rune(UpperCaseLetters)...)
 		// log.Println(string(chars[priorLen : priorLen+26]))
-		randChars = getChars(p.Upper, chars[priorLen:priorLen+26])
+		randChars = getChars(p.Upper, chars[priorLen:priorLen+26], strong)
 		pwd = append(pwd, randChars...)
 	}
 
@@ -131,7 +132,7 @@ func (p *Password) Generate() (password string, err error) {
 		priorLen = len(chars)
 		chars = append(chars, []rune(LowerCaseLetters)...)
 		// log.Println(string(chars[priorLen : priorLen+26]))
-		randChars = getChars(p.Lower, chars[priorLen:priorLen+26])
+		randChars = getChars(p.Lower, chars[priorLen:priorLen+26], strong)
 		pwd = append(pwd, randChars...)
 	}
 
@@ -139,7 +140,7 @@ func (p *Password) Generate() (password string, err error) {
 	if p.Number > 0 {
 		priorLen = len(chars)
 		chars = append(chars, []rune(Numbers)...)
-		randChars = getChars(p.Number, chars[priorLen:priorLen+10])
+		randChars = getChars(p.Number, chars[priorLen:priorLen+10], strong)
 		// log.Println(string(chars[priorLen : priorLen+10]))
 		pwd = append(pwd, randChars...)
 	}
@@ -153,7 +154,7 @@ func (p *Password) Generate() (password string, err error) {
 		} else {
 			chars = append(chars, p.ValidSymbols...)
 		}
-		randChars = getChars(p.Symbol, chars[priorLen:])
+		randChars = getChars(p.Symbol, chars[priorLen:], strong)
 		// log.Println(string(chars[priorLen:]))
 		pwd = append(pwd, randChars...)
 	}
@@ -162,7 +163,7 @@ func (p *Password) Generate() (password string, err error) {
 	// remaining random chars from full set to meet min length.
 	if len(pwd) < p.MinLength {
 		remain := p.MinLength - len(pwd)
-		randChars = getChars(remain, chars[:])
+		randChars = getChars(remain, chars[:], strong)
 		// log.Println(string(chars[:]))
 		pwd = append(pwd, randChars...)
 	}
@@ -174,19 +175,50 @@ func (p *Password) Generate() (password string, err error) {
 
 }
 
-func getChars(count int, runes []rune) []rune {
+// Generate returns a password using the passed rules and
+// and uses the pseudo-random number generator in the
+// math/rand library. It is not cryptographically secure!
+func (p *Password) Generate() (password string, err error) {
+
+	return p.generate(false)
+
+}
+
+// GenerateStrong returns a password using the passed rules
+// and uses the cryptographically secure pseudorandom number
+// generator in the crypto/rand library
+func (p *Password) GenerateStrong() (password string, err error) {
+
+	return p.generate(true)
+
+}
+
+func getChars(count int, runes []rune, strong bool) []rune {
 
 	numRunes := len(runes)
+	numRunesBig := big.NewInt(int64(numRunes))
 	selRunes := []rune{}
 	var idx int
+	var bidx *big.Int
+	var err error
 
 	for i := 0; i < count; i++ {
 		if numRunes == 1 {
 			idx = 0
 		} else {
-			idx = rand.Intn(numRunes)
+			if strong {
+				bidx, err = crytporand.Int(crytporand.Reader, numRunesBig)
+				if err != nil {
+					panic(err)
+				}
+				idx = int(bidx.Int64())
+			} else {
+				idx = rand.Intn(numRunes)
+			}
+			selRunes = append(selRunes, runes[idx])
+
 		}
-		selRunes = append(selRunes, runes[idx])
+
 	}
 
 	return selRunes

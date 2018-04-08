@@ -198,6 +198,64 @@ func Benchmark_Generate004(b *testing.B) {
 
 }
 
+func Benchmark_GenerateStrong001(b *testing.B) {
+	type args struct {
+		p Password
+	}
+
+	p := Password{MinLength: 16, Upper: 4, Lower: 4, Number: 4, Symbol: 4, ValidSymbols: []rune{}}
+
+	for n := 0; n < b.N; n++ {
+		_, err := p.GenerateStrong()
+		if err != nil {
+		}
+	}
+
+}
+
+func Benchmark_GenerateStrong002(b *testing.B) {
+	type args struct {
+		p Password
+	}
+
+	p := Password{MinLength: 16, Upper: 1, Lower: 1, Number: 1, Symbol: 1, ValidSymbols: []rune{}}
+
+	for n := 0; n < b.N; n++ {
+		_, err := p.GenerateStrong()
+		if err != nil {
+		}
+	}
+
+}
+func Benchmark_GenerateStrong003(b *testing.B) {
+	type args struct {
+		p Password
+	}
+
+	p := Password{MinLength: 32, Upper: 8, Lower: 8, Number: 8, Symbol: 8, ValidSymbols: []rune{}}
+
+	for n := 0; n < b.N; n++ {
+		_, err := p.GenerateStrong()
+		if err != nil {
+		}
+	}
+
+}
+func Benchmark_GenerateStrong004(b *testing.B) {
+	type args struct {
+		p Password
+	}
+
+	r := Password{MinLength: 32, Upper: 1, Lower: 1, Number: 1, Symbol: 1, ValidSymbols: []rune{}}
+
+	for n := 0; n < b.N; n++ {
+		_, err := r.GenerateStrong()
+		if err != nil {
+		}
+	}
+
+}
+
 // populates and returns stat struct with details of the password
 // based on the defined rules
 func getPwdStats(pwdStr *string, pwd *Password) stats {
