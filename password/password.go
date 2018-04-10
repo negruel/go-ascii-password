@@ -27,6 +27,7 @@ import (
 	"errors"
 	"math/big"
 	"math/rand"
+	"reflect"
 	"time"
 )
 
@@ -169,7 +170,7 @@ func (p *Password) generate(strong bool) (password string, err error) {
 	}
 
 	// randomize our password
-	shuffleRune(pwd)
+	shuffle(pwd)
 
 	return string(pwd), nil
 
@@ -227,10 +228,11 @@ func getChars(count int, runes []rune, strong bool) []rune {
 
 // Uses rand.Shuffle introduced in Go 1.10. If running earlier
 // version, use the version below and comment this one out.
-func shuffleRune(slice []rune) {
-	rand.Shuffle(len(slice), func(i, j int) {
-		slice[i], slice[j] = slice[j], slice[i]
-	})
+func shuffle(slice interface{}) {
+	rv := reflect.ValueOf(slice)
+	swap := reflect.Swapper(slice)
+	length := rv.Len()
+	rand.Shuffle(length, swap)
 }
 
 // func shuffleRune(slice []rune) {
