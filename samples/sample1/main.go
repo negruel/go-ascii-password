@@ -30,7 +30,8 @@ import (
 )
 
 var minPwdLen, minUpper, minLower, minNumber, minSpecial int
-var spclChar string
+var spclChar, generator, pwd string
+var err error
 
 func init() {
 
@@ -40,6 +41,7 @@ func init() {
 	flag.IntVar(&minLower, "l", 1, "Minimum number of lower case characters")
 	flag.IntVar(&minNumber, "n", 1, "Minimum number of numbers")
 	flag.IntVar(&minSpecial, "s", 1, "Minimum number of special characters")
+	flag.StringVar(&generator, "g", "c", "Random generator: c for crypto/rand; m for math/rand")
 
 }
 
@@ -66,7 +68,11 @@ func main() {
 		ValidSymbols: valSym,
 	}
 
-	pwd, err := password.Generate()
+	if generator == "c" {
+		pwd, err = password.GenerateStrong()
+	} else {
+		pwd, err = password.Generate()
+	}
 
 	if err != nil {
 		fmt.Println(err)
